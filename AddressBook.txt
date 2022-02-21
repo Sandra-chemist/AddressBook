@@ -26,36 +26,13 @@ string intToString(int liczba) {
     string str = ss.str();
     return str;
 }
-void addAddresseeToFile(Addressee person, int numberOfPeople, int userId) {
-    fstream file;
-    file.open("Adresaci.txt", ios::out | ios::app);
-    if (file.good() == true) {
-        file << person.id << '|';
-        file << person.userId << '|';
-        file << person.name << '|';
-        file << person.surname << '|';
-        file << person.email << '|';
-        file << person.phoneNumber << '|';
-        file << person.address << '|' << endl;
-
-        person.id++;
-        file.close();
-        numberOfPeople++;
-        cout << endl;
-        cout << "Adresat zostal dodany." << endl;
-        system("pause");
-
-    } else {
-        cout << "Nie mozna otworzyc pliku: Ksiazka_adresowa.txt." << endl;
-        system("pause");
-    }
-}
 int readTheLastId () {
     Addressee person;
     char separator = '|';
     int numberOfPeople = 0;
     string line;
     int lineNumber = 0;
+    int id;
 
     fstream file;
     file.open("Adresaci.txt", ios::in);
@@ -88,7 +65,7 @@ int readTheLastId () {
             break;
         }
         if (lineNumber >= 6) {
-            numberOfPeople++;
+            numberOfPeople = person.id;
             lineNumber = 0;
         } else {
             lineNumber++;
@@ -96,9 +73,32 @@ int readTheLastId () {
     }
     return numberOfPeople;
 }
+void addAddresseeToFile(Addressee person, int userId) {
+    fstream file;
+    file.open("Adresaci.txt", ios::out | ios::app);
+    if (file.good() == true) {
+        file << person.id << '|';
+        file << person.userId << '|';
+        file << person.name << '|';
+        file << person.surname << '|';
+        file << person.email << '|';
+        file << person.phoneNumber << '|';
+        file << person.address << '|' << endl;
+        person.id++;
+
+        file.close();
+        cout << endl;
+        cout << "Adresat zostal dodany." << endl;
+        system("pause");
+
+    } else {
+        cout << "Nie mozna otworzyc pliku: Ksiazka_adresowa.txt." << endl;
+        system("pause");
+    }
+}
 void addAddresseeToFileToAddressBook(vector<Addressee> &people, int numberOfPeople, int userId) {
     Addressee person;
-    int id;
+
     numberOfPeople = readTheLastId ();
 
     system("cls");
@@ -128,7 +128,7 @@ void addAddresseeToFileToAddressBook(vector<Addressee> &people, int numberOfPeop
 
     people.push_back(person);
 
-    addAddresseeToFile(person, numberOfPeople, userId);
+    addAddresseeToFile(person, userId);
 }
 
 Addressee downloadData(string line) {
@@ -624,7 +624,7 @@ int main() {
                 cin>>choice;
                 switch(choice) {
                 case '1':
-                    addAddresseeToFileToAddressBook(people,numberOfPeople, userId);
+                    addAddresseeToFileToAddressBook(people, numberOfPeople, userId);
                     break;
                 case '2':
                     searchByName(people);
